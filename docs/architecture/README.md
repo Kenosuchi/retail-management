@@ -2,7 +2,7 @@
 
 **Status:** Target architecture for the engineering foundation
 
-**Last reviewed:** 2026-09-10
+**Last reviewed:** 2026-09-12
 
 This document describes the platform's current intended structure and the rules against which implementation will be reviewed. Architecture decision records explain why consequential choices were made; they do not replace this current-state description.
 
@@ -26,7 +26,7 @@ Single MySQL schema
 
 The frontend and backend are separate build artifacts in one repository. The backend is one runtime and one deployable unit. Business capabilities execute in-process and share one database ownership boundary.
 
-The diagram is a target for R0. At R0-002, the application and infrastructure have not yet been scaffolded.
+The diagram is the current logical target for R0. The Spring Boot backend foundation exists as of R0-003. The Angular application, MySQL integration, and supporting infrastructure are introduced by later tickets.
 
 ## Component responsibilities
 
@@ -41,6 +41,8 @@ Frontend code will be organized around user-facing features as they are introduc
 The Spring Boot application owns business behavior, security enforcement, transaction boundaries, persistence, and operational endpoints. It will be organized by business capability, not as repository-wide `controller`, `service`, and `repository` packages.
 
 A capability's internal package structure may evolve with its needs. The architecture does not require every capability to contain identical technical subpackages.
+
+At R0-003, the backend contains only the application bootstrap, security baseline, and health endpoints. No business capability or persistence integration exists yet.
 
 ### Database
 
@@ -74,11 +76,15 @@ The backend is the trust boundary for application data and authorization. The fr
 
 Authentication design belongs to R1. Until then, architecture documentation must not imply a selected token format, identity provider, or authorization model.
 
+During R0-003, only anonymous `GET` requests to the liveness and readiness health paths are permitted. All other HTTP requests are denied, and form login and HTTP Basic authentication are disabled. This temporary foundation is not the authentication design for R1.
+
 Secrets are supplied through external configuration. They must not be committed to the repository, built into browser assets, or included in container images.
 
 ## Observability ownership
 
 Logging, metrics, tracing, and health checks are platform-level capabilities exposed consistently by the single backend runtime. Business capabilities contribute meaningful domain context through those facilities rather than selecting their own logging or monitoring stacks.
+
+The R0-003 backend provides human-readable console logs by default, an opt-in Logstash-compatible JSON console profile, and liveness and readiness health endpoints. Other actuator endpoints are not publicly exposed.
 
 The monitoring backend, retention policy, alert rules, and production dashboards are deferred until requirements are known. No observability vendor or search platform is implied by using structured logs.
 

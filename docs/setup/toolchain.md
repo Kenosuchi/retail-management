@@ -7,7 +7,8 @@ This document is the workstation contract for R0. It separates project requireme
 | Tool | Project requirement | Verified locally on 2026-09-10 UTC | How the project will enforce it |
 |---|---|---|---|
 | Git | A version capable of the documented clone and branch workflow | 2.53.0 | Repository history and documented workflow |
-| Java | Java 25 LTS JDK | Eclipse Temurin 25.0.4+7 LTS | The backend build will target Java 25 in R0-003 |
+| Java | Java 25 LTS JDK | Eclipse Temurin 25.0.4+7 LTS | The backend compiler targets Java 25 and Maven Enforcer accepts `[25,26)` |
+| Maven | Maven 3.9.16 supplied by the repository wrapper | 3.9.16 through `backend/mvnw` | `backend/.mvn/wrapper/maven-wrapper.properties` |
 | Node.js | 22.23.2 | 22.23.2 | `.nvmrc` |
 | npm | Compatible with the selected Node.js runtime | 10.9.8 | The frontend manifest and lockfile will establish the package-manager contract in R0-005 |
 | Docker Engine | A functioning Docker Engine accessible to the developer | Client and server 29.8.0 | Container image versions and Compose behavior will be established in R0-006 |
@@ -15,7 +16,7 @@ This document is the workstation contract for R0. It separates project requireme
 
 Angular 21 supports Node.js `^20.19.0`, `^22.12.0`, or `^24.0.0`. This repository pins Node.js 22.23.2 as its tested development version rather than relying on the entire supported range.
 
-Maven and the Angular CLI are intentionally not required as global installations. R0-003 will introduce the Maven wrapper, and R0-005 will introduce a repository-local Angular CLI invoked through npm scripts.
+Maven and the Angular CLI are intentionally not required as global installations. R0-003 provides the Maven Wrapper, and R0-005 will introduce a repository-local Angular CLI invoked through npm scripts.
 
 ## Workstation setup expectations
 
@@ -40,6 +41,8 @@ npm --version
 docker --version
 docker compose version
 docker info --format 'server={{.ServerVersion}} driver={{.Driver}} os={{.OperatingSystem}}'
+(cd backend && ./mvnw --version)
+(cd backend && ./mvnw clean verify)
 ```
 
 The checks pass when:
@@ -49,6 +52,7 @@ The checks pass when:
 - Node reports `v22.23.2`.
 - npm returns a valid semantic version.
 - Docker and Compose return versions, and `docker info` reports a server rather than a socket or permission error.
+- The backend wrapper reports Maven 3.9.16 and `./mvnw clean verify` completes successfully under Java 25.
 
 After frontend dependencies exist, use only the Angular CLI version installed in the frontend workspace through its npm scripts.
 
