@@ -2,7 +2,7 @@
 
 **Status:** Target architecture for the engineering foundation
 
-**Last reviewed:** 2026-09-12
+**Last reviewed:** 2026-09-13
 
 This document describes the platform's current intended structure and the rules against which implementation will be reviewed. Architecture decision records explain why consequential choices were made; they do not replace this current-state description.
 
@@ -26,7 +26,10 @@ Single MySQL schema
 
 The frontend and backend are separate build artifacts in one repository. The backend is one runtime and one deployable unit. Business capabilities execute in-process and share one database ownership boundary.
 
-The diagram is the current logical target for R0. The Spring Boot backend foundation exists as of R0-003. The Angular application, MySQL integration, and supporting infrastructure are introduced by later tickets.
+The diagram is the current logical target for R0. The Spring Boot backend
+foundation exists as of R0-003, and R0-004 adds the MySQL persistence
+foundation. The Angular application and Compose infrastructure remain later
+tickets.
 
 ## Component responsibilities
 
@@ -42,7 +45,10 @@ The Spring Boot application owns business behavior, security enforcement, transa
 
 A capability's internal package structure may evolve with its needs. The architecture does not require every capability to contain identical technical subpackages.
 
-At R0-003, the backend contains only the application bootstrap, security baseline, and health endpoints. No business capability or persistence integration exists yet.
+The backend contains the application bootstrap, security baseline, health
+endpoints, and the R0-004 persistence integration. No business capability,
+entity, or repository exists yet. The [R0-004 final review](../reviews/R0-004.md)
+records the verification evidence.
 
 ### Database
 
@@ -50,7 +56,12 @@ MySQL is the primary source of truth. The modular monolith owns one schema, whil
 
 Sharing a schema does not permit one capability to manipulate another capability's tables or persistence entities directly. Cross-capability behavior goes through an explicit module-facing application interface.
 
-Flyway will own schema evolution. Hibernate will validate mappings rather than create or update production-like schemas.
+Flyway owns schema evolution. Hibernate is configured to validate mappings
+rather than create or update production-like schemas. MySQL 8.4 LTS is the
+supported server line; [ADR-0004](../adr/0004-mysql-8-4-lts-baseline.md) records
+the choice. A Spring-managed Testcontainers MySQL instance provides an isolated
+database for integration tests. The test-only `V0` migration is absent from the
+production artifact; production migrations will start at `V1`.
 
 ### Infrastructure
 
@@ -86,6 +97,10 @@ Logging, metrics, tracing, and health checks are platform-level capabilities exp
 
 The R0-003 backend provides human-readable console logs by default, an opt-in Logstash-compatible JSON console profile, and liveness and readiness health endpoints. Other actuator endpoints are not publicly exposed.
 
+The R0-004 readiness contract includes database availability because no degraded
+operating mode exists. Liveness remains independent of MySQL, avoiding restarts
+in response to a shared database outage. All health details remain private.
+
 The monitoring backend, retention policy, alert rules, and production dashboards are deferred until requirements are known. No observability vendor or search platform is implied by using structured logs.
 
 ## Change governance
@@ -104,3 +119,4 @@ An extraction proposal must also account for data ownership, consistency, failur
 - [ADR-0001: Modular monolith and monorepo](../adr/0001-modular-monolith-and-monorepo.md)
 - [ADR-0002: Repository-controlled build tooling](../adr/0002-repository-controlled-build-tooling.md)
 - [ADR-0003: Flyway-managed database migrations](../adr/0003-flyway-managed-database-migrations.md)
+- [ADR-0004: MySQL 8.4 LTS baseline](../adr/0004-mysql-8-4-lts-baseline.md)

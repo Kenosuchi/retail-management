@@ -11,7 +11,7 @@ This document is the workstation contract for R0. It separates project requireme
 | Maven | Maven 3.9.16 supplied by the repository wrapper | 3.9.16 through `backend/mvnw` | `backend/.mvn/wrapper/maven-wrapper.properties` |
 | Node.js | 22.23.2 | 22.23.2 | `.nvmrc` |
 | npm | Compatible with the selected Node.js runtime | 10.9.8 | The frontend manifest and lockfile will establish the package-manager contract in R0-005 |
-| Docker Engine | A functioning Docker Engine accessible to the developer | Client and server 29.8.0 | Container image versions and Compose behavior will be established in R0-006 |
+| Docker Engine | A functioning Docker Engine accessible to the developer | Client and server 29.8.0 | R0-004 integration tests start the pinned `mysql:8.4.11` image; Compose behavior remains R0-006 |
 | Docker Compose | The `docker compose` plugin | 5.5.1 | The Compose definition and smoke workflow will be established in R0-006 |
 
 Angular 21 supports Node.js `^20.19.0`, `^22.12.0`, or `^24.0.0`. This repository pins Node.js 22.23.2 as its tested development version rather than relying on the entire supported range.
@@ -55,6 +55,12 @@ The checks pass when:
 - The backend wrapper reports Maven 3.9.16 and `./mvnw clean verify` completes successfully under Java 25.
 
 After frontend dependencies exist, use only the Angular CLI version installed in the frontend workspace through its npm scripts.
+
+Starting with R0-004, backend verification requires Docker because it includes
+real MySQL integration tests. Compilation still runs on the workstation through
+the Maven Wrapper; this does not introduce container-only builds. Database
+containers use dynamically assigned ports and do not require a local service on
+port 3306. See [database setup and troubleshooting](database.md).
 
 ## Repository and remote verification record
 

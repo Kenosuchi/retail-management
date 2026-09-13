@@ -2,7 +2,10 @@
 
 This directory contains the Java 25 and Spring Boot 4.1 modular-monolith application.
 
-R0-003 establishes only the backend engineering foundation. It does not introduce business APIs, authentication, or persistence.
+R0-003 established the backend engineering foundation. R0-004 adds MySQL,
+JPA, and Flyway integration. No business APIs, authentication, entities, or
+production business tables exist yet. See the
+[R0-004 final review](../docs/reviews/R0-004.md).
 
 ## Project identity
 
@@ -16,6 +19,9 @@ R0-003 establishes only the backend engineering foundation. It does not introduc
 ## Prerequisites
 
 - A Java 25 JDK must be active in the current shell.
+- A functioning Docker Engine is required for integration tests. Testcontainers
+  starts `mysql:8.4.11` automatically; a manually started MySQL service or Compose
+  stack is not required for tests. The first run needs access to the image registry.
 - A global Maven installation is not required and must not be used as the project build contract.
 
 Verify the toolchain from this directory:
@@ -37,9 +43,21 @@ Run the complete backend verification lifecycle from this directory:
 
 This command compiles the application, runs the automated tests, creates the executable JAR, and applies build-time enforcement rules.
 
+The tests use JUnit and a shared Spring-managed MySQL container configuration.
+They verify database identity, Flyway history, JDBC write/read behavior, Hibernate
+validation, persistence-context boundaries, and HTTP health/security behavior.
+The test account password is generated for each container. Missing Docker is a
+verification failure, not a reason to skip database tests.
+
+Tests enforce readiness membership and ensure Open EntityManager in View remains
+disabled. Hibernate has no domain entities to validate yet; mapping/schema
+compatibility tests belong with the first domain model.
+
 ## Run locally
 
-Start the application with the Maven Wrapper:
+Provide a reachable MySQL 8.4 database and external datasource configuration
+using the [database setup guide](../docs/setup/database.md), then start the
+application with the Maven Wrapper:
 
 ```bash
 ./mvnw spring-boot:run
@@ -70,6 +88,10 @@ A healthy response contains only the aggregate status:
 ```
 
 Health components and details are intentionally hidden.
+
+Readiness includes `db` and `readinessState`, while liveness is limited to
+`livenessState`. A database failure makes readiness return HTTP 503 without
+making liveness fail.
 
 ## Security baseline
 
@@ -102,4 +124,6 @@ The backend will own:
 
 Business code will be organized by capability rather than by global technical layers. A capability may use another capability only through an explicit module-facing application interface; it must not reach into another capability's entities, repositories, or other internal implementation types.
 
-The current backend has no business capabilities or database integration. Those concerns must be introduced only by their owning tickets while preserving the boundaries above.
+The current backend introduces database integration without business capabilities.
+The smoke table and its `V0` migration exist only in test resources. Production
+migrations start at `V1` when a real domain schema is introduced.

@@ -28,3 +28,4 @@ Start from [ADR-0000](0000-template.md). Create an ADR when a decision meaningfu
 | [0001](0001-modular-monolith-and-monorepo.md) | Accepted | Start with a modular monolith in a monorepo |
 | [0002](0002-repository-controlled-build-tooling.md) | Accepted | Use repository-controlled Maven and npm tooling |
 | [0003](0003-flyway-managed-database-migrations.md) | Accepted | Make Flyway the owner of schema evolution |
+| [0004](0004-mysql-8-4-lts-baseline.md) | Accepted | Use MySQL 8.4 LTS as the initial supported database line |
