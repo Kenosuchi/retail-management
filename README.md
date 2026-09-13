@@ -25,8 +25,8 @@ The platform starts as a modular monolith with one Angular frontend, one Spring 
 
 ## Current implementation boundary
 
-R0-003 and R0-004 establish the backend and persistence foundations. They
-currently provide:
+R0-003 through R0-005 establish the backend, persistence, and frontend
+foundations. They currently provide:
 
 - a Java 25 and Spring Boot 4.1 backend built with the Maven Wrapper;
 - secure-by-default HTTP access rules;
@@ -34,10 +34,16 @@ currently provide:
 - human-readable local logging and an opt-in structured JSON logging profile;
 - MySQL 8.4 persistence through JPA/Hibernate and Flyway-managed migrations;
 - database-aware readiness with database-independent liveness;
-- JUnit integration tests using a disposable MySQL container.
+- JUnit integration tests using a disposable MySQL container;
+- a strict, standalone, zoneless Angular 21 application built with the
+  repository-local Angular CLI;
+- an application shell with a foundation route, not-found handling, route
+  titles, and Vitest coverage.
 
 See the [R0-004 final review](docs/reviews/R0-004.md) and
-[database setup](docs/setup/database.md).
+[database setup](docs/setup/database.md). Frontend setup and verification are
+documented in the [frontend README](frontend/README.md).
 
 Business APIs, authentication, production business migrations, frontend
-scaffolding, Docker Compose integration, and CI belong to subsequent tickets.
+features, backend API integration, Docker Compose integration, and CI belong to
+subsequent tickets.

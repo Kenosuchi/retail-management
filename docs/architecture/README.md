@@ -27,9 +27,9 @@ Single MySQL schema
 The frontend and backend are separate build artifacts in one repository. The backend is one runtime and one deployable unit. Business capabilities execute in-process and share one database ownership boundary.
 
 The diagram is the current logical target for R0. The Spring Boot backend
-foundation exists as of R0-003, and R0-004 adds the MySQL persistence
-foundation. The Angular application and Compose infrastructure remain later
-tickets.
+foundation exists as of R0-003, R0-004 adds the MySQL persistence foundation,
+and R0-005 adds the Angular application foundation. Compose infrastructure
+remains a later ticket.
 
 ## Component responsibilities
 
@@ -38,6 +38,13 @@ tickets.
 The Angular application owns presentation, browser interaction, client-side navigation, and calls to documented backend APIs. It does not connect directly to MySQL or contain trusted secrets.
 
 Frontend code will be organized around user-facing features as they are introduced. Common code is extracted only after its reuse and semantics are understood; a generic shared area is not a default dependency for every feature.
+
+The R0-005 implementation is a standalone, strict, zoneless Angular 21
+application. Its root outlet activates a common application shell, whose child
+routes provide the foundation page and wildcard not-found behavior. Route
+components are loaded lazily, and Vitest covers rendered content, navigation,
+and document titles. No business feature, backend API client, authentication
+state, or browser-delivered environment configuration exists yet.
 
 ### Backend
 
