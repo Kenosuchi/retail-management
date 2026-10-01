@@ -2,7 +2,7 @@
 
 **Status:** Target architecture for the engineering foundation
 
-**Last reviewed:** 2026-09-13
+**Last reviewed:** 2026-10-02
 
 This document describes the platform's current intended structure and the rules against which implementation will be reviewed. Architecture decision records explain why consequential choices were made; they do not replace this current-state description.
 
@@ -28,8 +28,8 @@ The frontend and backend are separate build artifacts in one repository. The bac
 
 The diagram is the current logical target for R0. The Spring Boot backend
 foundation exists as of R0-003, R0-004 adds the MySQL persistence foundation,
-and R0-005 adds the Angular application foundation. Compose infrastructure
-remains a later ticket.
+R0-005 adds the Angular application foundation, and R0-006 supplies their
+local Compose integration.
 
 ## Component responsibilities
 
@@ -73,6 +73,14 @@ production artifact; production migrations will start at `V1`.
 ### Infrastructure
 
 Infrastructure definitions support the application; they do not contain business logic. R0 does not include Redis, Kafka, Kubernetes, Elasticsearch, or a service mesh.
+
+R0-006 defines a local Compose environment with three containers: a static
+Angular build served by Nginx, the single Spring Boot deployable, and MySQL.
+Compose service discovery connects the backend to MySQL on its private network;
+only frontend and backend ports are bound to the loopback interface. The MySQL
+named volume persists local data independently of database containers. This is
+local integration infrastructure, not a production topology or a microservice
+boundary.
 
 ## Backend module-boundary rules
 

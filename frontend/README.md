@@ -52,6 +52,18 @@ npm start
 Open `http://localhost:4200/`. The server reloads the application when source
 files change.
 
+## Run the production build with Compose
+
+The R0-006 local integration environment builds this application and serves its
+static production output through Nginx at `http://127.0.0.1:4200/`. Use the
+[infrastructure guide](../infra/README.md) for setup, lifecycle, and health
+checks.
+
+Nginx returns the Angular application shell for browser routes so that direct
+navigation and refresh on an unknown route can render the application's
+**Page not found** page. Missing static assets such as JavaScript and CSS must
+remain HTTP 404 responses rather than receiving that fallback.
+
 ## Verify the frontend
 
 Run the complete local verification workflow with:

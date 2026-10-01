@@ -7,8 +7,19 @@ R0-004 establishes the database integration described here. Its
 
 Provide a reachable MySQL 8.4 server, an existing application database, and a
 non-root account authorized for that database. Database/account provisioning is
-separate from Flyway's table migrations. R0-006 will provide the supported
-Compose workflow.
+separate from Flyway's table migrations. For the supported local Compose
+workflow, see the [infrastructure guide](../../infra/README.md).
+
+Compose supplies these variables to the backend from its ignored `infra/.env`
+file. It maps the database service to `jdbc:mysql://mysql:3306/${MYSQL_DATABASE}`;
+the name `mysql` resolves only within the Compose network. The database port is
+not published to the host. Create the local file from
+[`infra/.env.example`](../../infra/.env.example), never commit it, and do not
+place a password in a JDBC URL.
+
+The infrastructure guide also defines the bounded local startup check and the
+manual database-outage, recovery, and persistence verification procedure. Run
+those checks only against a local environment that is not actively being used.
 
 Supply these standard Spring Boot environment variables:
 

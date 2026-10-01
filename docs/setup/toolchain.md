@@ -11,8 +11,8 @@ This document is the workstation contract for R0. It separates project requireme
 | Maven | Maven 3.9.16 supplied by the repository wrapper | 3.9.16 through `backend/mvnw` | `backend/.mvn/wrapper/maven-wrapper.properties` |
 | Node.js | 22.23.2 | 22.23.2 | `.nvmrc` |
 | npm | 10.9.8 | 10.9.8 | `frontend/package.json` and `frontend/package-lock.json` |
-| Docker Engine | A functioning Docker Engine accessible to the developer | Client and server 29.8.0 | R0-004 integration tests start the pinned `mysql:8.4.11` image; Compose behavior remains R0-006 |
-| Docker Compose | The `docker compose` plugin | 5.5.1 | The Compose definition and smoke workflow will be established in R0-006 |
+| Docker Engine | A functioning Docker Engine accessible to the developer | Client and server 29.8.0 | R0-004 integration tests start the pinned `mysql:8.4.11` image; R0-006 builds and runs the local integration environment |
+| Docker Compose | The `docker compose` plugin | 5.5.1 | `infra/docker-compose.yaml` defines the local integration environment |
 
 Angular 21 supports Node.js `^20.19.0`, `^22.12.0`, or `^24.0.0`. This repository pins Node.js 22.23.2 as its tested development version rather than relying on the entire supported range.
 
@@ -45,6 +45,7 @@ docker info --format 'server={{.ServerVersion}} driver={{.Driver}} os={{.Operati
 (cd backend && ./mvnw clean verify)
 (cd frontend && npm ci)
 (cd frontend && npm run verify)
+docker compose -f infra/docker-compose.yaml config --quiet
 ```
 
 The checks pass when:
@@ -56,6 +57,7 @@ The checks pass when:
 - Docker and Compose return versions, and `docker info` reports a server rather than a socket or permission error.
 - The backend wrapper reports Maven 3.9.16 and `./mvnw clean verify` completes successfully under Java 25.
 - `npm ci` installs the lockfile exactly, and the frontend verification command passes formatting, Vitest, and the production build.
+- Compose resolves the local environment file and reports no configuration errors. See the [infrastructure guide](../../infra/README.md) for setup and lifecycle commands.
 
 Use only the Angular CLI installed in the frontend workspace through its npm
 scripts. `npm start`, `npm test`, `npm run test:ci`, and `npm run verify` are the

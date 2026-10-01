@@ -65,6 +65,11 @@ application with the Maven Wrapper:
 
 The application listens on port `8080` unless external configuration overrides it.
 
+For local integration with the production-style frontend build and MySQL,
+prefer the repository [Compose workflow](../infra/README.md). Compose supplies
+the datasource variables externally; application code and `application.properties`
+do not contain database credentials.
+
 ## Health endpoints
 
 The following anonymous HTTP endpoints are available:

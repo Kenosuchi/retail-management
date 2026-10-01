@@ -25,8 +25,8 @@ The platform starts as a modular monolith with one Angular frontend, one Spring 
 
 ## Current implementation boundary
 
-R0-003 through R0-005 establish the backend, persistence, and frontend
-foundations. They currently provide:
+R0-003 through R0-006 establish the backend, persistence, frontend, and local
+container foundations. They currently provide:
 
 - a Java 25 and Spring Boot 4.1 backend built with the Maven Wrapper;
 - secure-by-default HTTP access rules;
@@ -38,12 +38,17 @@ foundations. They currently provide:
 - a strict, standalone, zoneless Angular 21 application built with the
   repository-local Angular CLI;
 - an application shell with a foundation route, not-found handling, route
-  titles, and Vitest coverage.
+  titles, and Vitest coverage;
+- a Docker Compose local integration environment with an Angular production
+  build, Spring Boot backend, and persistent MySQL 8.4 database.
 
 See the [R0-004 final review](docs/reviews/R0-004.md) and
 [database setup](docs/setup/database.md). Frontend setup and verification are
-documented in the [frontend README](frontend/README.md).
+documented in the [frontend README](frontend/README.md). Local container
+startup, bounded smoke checks, health checks, logs, persistence, and safe reset
+procedures are in the [infrastructure guide](infra/README.md); the
+[R0-006 final review](docs/reviews/R0-006.md) records its acceptance evidence.
 
 Business APIs, authentication, production business migrations, frontend
-features, backend API integration, Docker Compose integration, and CI belong to
-subsequent tickets.
+features, backend API integration, CI, staging deployment, and production
+operations belong to subsequent tickets.

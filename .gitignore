@@ -38,3 +38,5 @@
 # Operating-system metadata
 .DS_Store
 Thumbs.db
+
+infra/.env
